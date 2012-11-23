@@ -67,6 +67,7 @@
                     console.log(counter + '/' + size);
                     if(counter == size) {
                         self.$el.isotope();
+                        self.$('.thumbnail').fancybox();
                     }
                 })
                 .attr('src', src)
