@@ -9,6 +9,31 @@
     var nav_template = 'nav-list-item-tmpl';
     var gallery_template = 'image-list-item-tmpl';
 
+    window.TotalApp = Backbone.View.extend({
+        el: 'body',
+
+        events: {
+            'click .navbar ul.nav > li': 'active_toggle',
+            'click #popular': 'get_popular'
+        },
+
+        initialize: function() {
+            this.$nav_links = this.$('ul.nav > li');
+        },
+
+        get_popular: function(e) {
+            $.getJSON('/popular', function(json) {
+                window.image_list.render(json);
+            });
+        },
+
+        active_toggle: function(e) {
+            console.log(e);
+            $self = $(e.target).parent();
+            this.$nav_links.removeClass('active');
+            $self.addClass('active');
+        }
+    });
 
     window.NavListView = Backbone.View.extend({
         template: 'nav-list-item-tmpl',
@@ -54,7 +79,8 @@
 
         render: function(json) {
             var self = this;
-            this.$el.isotope('destroy');
+            if(this.$el.children().length)
+                this.$el.isotope('destroy');
             this.$el.html(template(this.template, json));
 
             var $srcs = this.$('a.thumbnail');
@@ -67,7 +93,9 @@
                     console.log(counter + '/' + size);
                     if(counter == size) {
                         self.$el.isotope();
-                        self.$('.thumbnail').fancybox();
+                        self.$('.thumbnail').fancybox({
+                            'preload': false
+                        });
                     }
                 })
                 .attr('src', src)
@@ -75,7 +103,8 @@
             });
         }
     });
-
+    
+    window.app = new TotalApp();
     window.nav = new NavListView();
     window.image_list = new ImageList();
 })();
