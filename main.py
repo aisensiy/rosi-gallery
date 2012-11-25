@@ -1,6 +1,7 @@
 # -*- coding: utf8 -*-
 from flask import Flask, send_file
 from PIL import Image
+import time
 import json
 import os
 import re
@@ -8,6 +9,8 @@ import re
 app = Flask('rosi-view')
 base_dir = "e:\\rosi"
 thumb_width = 300
+image_view_log_file = 'image_view.log'
+image_pattern = r'\.(gif|png|jpeg|jpg)$'
 
 content_type_map = {
     'jpeg': 'image/jpeg',
@@ -31,30 +34,37 @@ def folder_list():
     return json.dumps(folders)
 
 
-@app.route("/list/<folder>")
+@app.route("/list/<path:folder>")
 def image_list(folder):
     filered = 'thumb'
     dir_path = os.path.join(base_dir, folder)
     if not os.path.isdir(dir_path):
         return "not found", 404
-    images = ['/'.join([folder, file_name]) for file_name in os.listdir(dir_path) \
-                if os.path.isfile(os.path.join(dir_path, file_name))
-                and re.search(filered, file_name) is None]
+    images = []
+    for root, dirs, files in os.walk(dir_path):
+        for file_name in files:
+            if re.search(image_pattern, file_name, re.IGNORECASE) \
+            and re.search(filered, file_name, re.IGNORECASE) is None:
+                images.append('/'.join([os.path.relpath(root, base_dir).replace('\\', '/'), file_name]))
+
     images.sort()
     return json.dumps(images)
 
 
-@app.route("/list/<folder>/<image>")
+@app.route("/list/<folder>/<path:image>")
 def get_image(folder, image):
+    print folder, image
     file_path = os.path.join(base_dir, folder, image)
     if not os.path.isfile(file_path):
         return "not found", 404
 
     file_name, file_ext = os.path.splitext(file_path)
+    file(image_view_log_file, 'a').write("[IMAGE_VIEW] image view %s at %d\n" % \
+                                         (('/'.join([folder, image])).encode('utf8'), time.time()))
     return send_file(file_path, mimetype=content_type_map.get(file_ext.lower()))
 
 
-@app.route("/list/<folder>/<image>/thumbnail")
+@app.route("/list/<folder>/<path:image>/thumbnail")
 def get_thumbnail(folder, image):
     file_path = os.path.join(base_dir, folder, image)
     if not os.path.isfile(file_path):
@@ -75,6 +85,7 @@ def get_thumbnail(folder, image):
         else:
             return send_file(file_path, mimetype=content_type_map.get(file_ext.lower()))
     return send_file(thumb_path, mimetype=content_type_map.get(file_ext.lower()))
+
 
 if __name__ == "__main__":
     app.run(debug=True)
