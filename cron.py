@@ -1,7 +1,7 @@
 # -*- coding: utf8 -*-
 import re
 import os
-from collections import Counter
+from collection import Counter
 import json
 
 from config import Config
