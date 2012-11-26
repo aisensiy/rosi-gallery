@@ -1,11 +1,10 @@
 from setuptools import setup
 
 requires = [
-
     'flask',
-    'PIL'
-
-    ]
+    'PIL',
+    'BeautifulSoup'
+]
 
 setup(name='rosi-view',
       version='0.1',

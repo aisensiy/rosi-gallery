@@ -1,1 +1,4 @@
 config.json
+*.pyc
+*.log
+*.txt
