@@ -7,13 +7,12 @@ import json
 import os
 import re
 
+from config import Config
 from cron import calculate_popular
 
+config = Config('config.json')
+
 app = Flask('rosi-view')
-popular_result = 'popular.txt'
-base_dir = "e:\\rosi"
-thumb_width = 300
-image_view_log_file = 'image_view.log'
 image_pattern = r'\.(gif|png|jpeg|jpg)$'
 
 content_type_map = {
@@ -31,8 +30,8 @@ def index():
 
 @app.route("/list")
 def folder_list():
-    folders = [file_name for file_name in os.listdir(base_dir) \
-                if os.path.isdir(os.path.join(base_dir, file_name))]
+    folders = [file_name for file_name in os.listdir(config.base_dir) \
+                if os.path.isdir(os.path.join(config.base_dir, file_name))]
     folders = map(lambda x: x.isdigit() and int(x) or x, folders)
     random.shuffle(folders)
     return json.dumps(folders)
@@ -41,7 +40,7 @@ def folder_list():
 @app.route("/list/<path:folder>")
 def image_list(folder):
     filered = 'thumb'
-    dir_path = os.path.join(base_dir, folder)
+    dir_path = os.path.join(config.base_dir, folder)
     if not os.path.isdir(dir_path):
         return "not found", 404
     images = []
@@ -49,7 +48,7 @@ def image_list(folder):
         for file_name in files:
             if re.search(image_pattern, file_name, re.IGNORECASE) \
             and re.search(filered, file_name, re.IGNORECASE) is None:
-                images.append('/'.join([os.path.relpath(root, base_dir).replace('\\', '/'), file_name]))
+                images.append('/'.join([os.path.relpath(root, config.base_dir).replace('\\', '/'), file_name]))
 
     images.sort()
     sub_images = images[1:]
@@ -60,12 +59,12 @@ def image_list(folder):
 @app.route("/list/<folder>/<path:image>")
 def get_image(folder, image):
     print folder, image
-    file_path = os.path.join(base_dir, folder, image)
+    file_path = os.path.join(config.base_dir, folder, image)
     if not os.path.isfile(file_path):
         return "not found", 404
 
     file_name, file_ext = os.path.splitext(file_path)
-    log = file(image_view_log_file, 'a')
+    log = file(config.image_view_log_file, 'a')
     log.write("[IMAGE_VIEW] image view %s at %d\n" % \
                                          (file_path.encode('utf8'), time.time()))
     return send_file(file_path, mimetype=content_type_map.get(file_ext.lower()))
@@ -73,7 +72,7 @@ def get_image(folder, image):
 
 @app.route("/list/<folder>/<path:image>/thumbnail")
 def get_thumbnail(folder, image):
-    file_path = os.path.join(base_dir, folder, image)
+    file_path = os.path.join(config.base_dir, folder, image)
     if not os.path.isfile(file_path):
         return "not found", 404
 
@@ -86,8 +85,8 @@ def get_thumbnail(folder, image):
         width, height = image.size
         print width, height
         print file_ext
-        if thumb_width < width:
-            image.thumbnail((thumb_width, 1.0 * height / width * thumb_width), Image.ANTIALIAS)
+        if config.thumb_width < width:
+            image.thumbnail((config.thumb_width, 1.0 * height / width * config.thumb_width), Image.ANTIALIAS)
             image.save(thumb_path)
         else:
             return send_file(file_path, mimetype=content_type_map.get(file_ext.lower()))
@@ -96,11 +95,9 @@ def get_thumbnail(folder, image):
 
 @app.route("/popular")
 def get_popular():
-    base_dir = 'e:\\rosi'
-    image_view_log_file = 'image_view.log'
     lines = [line.strip() for line in \
-    file(image_view_log_file, 'r').readlines() if line.strip()]
-    populars = calculate_popular(base_dir, lines)
+    file(config.image_view_log_file, 'r').readlines() if line.strip()]
+    populars = calculate_popular(config.base_dir, lines)
     return json.dumps(populars.keys())
 
 

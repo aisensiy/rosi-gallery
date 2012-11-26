@@ -4,7 +4,9 @@ import os
 from collections import Counter
 import json
 
-popular_result = "popular.txt"
+from config import Config
+
+config = Config('config.json')
 
 
 def calculate_popular(base_dir, lines):
@@ -22,11 +24,9 @@ def calculate_popular(base_dir, lines):
 
 
 def run_calculate_popular():
-    base_dir = 'e:\\rosi'
-    image_view_log_file = 'image_view.log'
     lines = [line.strip() for line in \
-    file(image_view_log_file, 'r').readlines() if line.strip()]
-    return calculate_popular(base_dir, lines)
+    file(config.image_view_log_file, 'r').readlines() if line.strip()]
+    return calculate_popular(config.base_dir, lines)
 
 if __name__ == "__main__":
-    file(popular_result, 'w').write(json.dumps(run_calculate_popular()))
+    file(config.popular_result, 'w').write(json.dumps(run_calculate_popular()))
