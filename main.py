@@ -1,15 +1,11 @@
 # -*- coding: utf8 -*-
 from flask import Flask, send_file
+from PIL import Image
 import random
 import time
 import json
 import os
 import re
-
-try:
-    from PIL import Image
-except:
-    import Image
 
 from config import Config
 from cron import calculate_popular
