@@ -102,7 +102,9 @@ def get_popular():
     lines = [line.strip() for line in \
     file(config.image_view_log_file, 'r').readlines() if line.strip()]
     populars = calculate_popular(config.base_dir, lines)
-    return json.dumps(populars.keys())
+    results = populars.keys()
+    random.shuffle(results)
+    return json.dumps(results)
 
 
 if __name__ == "__main__":
