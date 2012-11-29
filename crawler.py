@@ -15,7 +15,7 @@ from config import Config
 socket.setdefaulttimeout(10)
 
 config = Config('config.json')
-total = 1
+total = config.total + 1
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; rv:10.0) Gecko/20100101 Firefox/10.0',
            'Accept-Encoding': 'gzip'}
@@ -35,7 +35,7 @@ def nomalize_url(url):
 
 def get_page_links(url):
     soup = Soup(load_page(url))
-    print 'open %s %s' % (soup.title.string, url)
+    print 'open %s %s' % (soup.title.string.encode('utf-8'), url)
     links = select(soup, 'a.post-article')
     #links = soup.findAll('a', href=re.compile(r'^http://duoduovision.diandian.com/post/\d{4}-\d{2}-\d{2}/'))
     #return list(set([nomalize_url(a['href']) for a in links]))
@@ -100,7 +100,7 @@ if __name__ == '__main__':
 
     print 'start: ', time.asctime()
     url_param = 'http://duoduovision.diandian.com/page/%d'
-    for i in range(18, 19):
+    for i in range(20, 21):
         url = url_param % (i)
         fronter(url)
     print 'end: ', time.asctime()
