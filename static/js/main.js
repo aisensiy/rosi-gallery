@@ -22,6 +22,8 @@
         },
 
         get_popular: function(e) {
+            nav.$el.parent().hide();
+            image_list.$el.parent().removeClass('span9').addClass('span12');
             $.getJSON('/popular', function(json) {
                 window.image_list.render(json);
             });
