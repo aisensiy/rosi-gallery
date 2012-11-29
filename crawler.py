@@ -15,7 +15,11 @@ from config import Config
 socket.setdefaulttimeout(10)
 
 config = Config('config.json')
-total = config.total + 1
+
+try:
+    total = config.total + 1
+except:
+    total = 1
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; rv:10.0) Gecko/20100101 Firefox/10.0',
            'Accept-Encoding': 'gzip'}
