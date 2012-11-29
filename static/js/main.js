@@ -51,6 +51,10 @@
             $.getJSON('/list', function(json) {
                 self.data = json;
                 self.render();
+                if(!self.init_load) {
+                    self.$el.children().first().find('a').click();
+                    self.init_load = true;
+                }
             });
         },
 
