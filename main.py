@@ -1,5 +1,5 @@
 # -*- coding: utf8 -*-
-from flask import Flask, send_file
+from flask import Flask, send_file, Response
 import random
 import time
 import json
@@ -94,7 +94,7 @@ def get_thumbnail(folder, image):
             image.save(thumb_path)
         else:
             return send_file(file_path, mimetype=content_type_map.get(file_ext.lower()))
-    return send_file(thumb_path, mimetype=content_type_map.get(file_ext.lower()))
+    return send_file(thumb_path, mimetype=content_type_map.get(file_ext.lower()), cache_timeout=30 * 86400)
 
 
 @app.route("/popular")
