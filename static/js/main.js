@@ -22,11 +22,14 @@
         },
 
         get_popular: function(e) {
+            e && e.preventDefault();
             nav.$el.parent().hide();
             image_list.$el.parent().removeClass('span9').addClass('span12');
             $.getJSON('/popular', function(json) {
                 window.image_list.render(json);
             });
+
+            e && app.navigate('top', false);
         },
 
         active_toggle: function(e) {
@@ -43,7 +46,7 @@
         el: '#image_list',
 
         events: {
-            'click li > a': 'show_images'
+            'click li > a': 'click_show_images'
         },
 
         initialize: function() {
@@ -58,8 +61,15 @@
             });
         },
 
-        show_images: function(e) {
+        click_show_images: function(e) {
+            e.preventDefault();
+            console.log('prevent!');
             var dir = $.trim($(e.target).text());
+            app.navigate('gallery/' + dir, false);
+            this.show_images(dir);
+        },
+
+        show_images: function(dir) {
             console.log('/list/' + dir);
             $.getJSON('/list/' + dir, function(json) {
                 window.image_list.render(json);
@@ -109,8 +119,33 @@
             });
         }
     });
+
+    var AppRouter = Backbone.Router.extend({
+        routes: {
+            "": "gallery",
+            "gallery/:dir": "single_gallery",
+            "top": "popular"
+        },
+
+        initialize: function() {
+            window.totalapp = new TotalApp();
+            window.nav = new NavListView();
+            window.image_list = new ImageList();
+        },
+
+        gallery: function() {
+
+        },
+
+        single_gallery: function(dir) {
+            nav.show_images(dir);
+        },
+
+        popular: function() {
+            totalapp.get_popular();
+        }
+    });
     
-    window.app = new TotalApp();
-    window.nav = new NavListView();
-    window.image_list = new ImageList();
+    var app = new AppRouter();
+    Backbone.history.start();
 })();
