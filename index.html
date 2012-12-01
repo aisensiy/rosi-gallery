@@ -66,10 +66,10 @@
             </div>
         </div>
 
-        <div class="container">
+        <div class="container-fluid">
 
-            <div class="row">
-                <div class="span3 bs-docs-sidenav">
+            <div class="row-fluid">
+                <div class="fixed-bar bs-docs-sidenav">
                     <ul id="image_list" class="nav nav-list bs-docs-sidenav">
                         
                     </ul>
@@ -82,12 +82,12 @@
                     </script>
                 </div>
 
-                <div class="span9">
+                <div class="main">
                     <ul class="thumbnails" id="thumnails">
                     </ul>
                     <script type="template" id="image-list-item-tmpl">
                     {{#each this}}
-                    <li class="span3">
+                    <li class="">
                         <a href="/list/{{this}}" class="thumbnail" data-src="/list/{{this}}/thumbnail" data-fancybox-group="gallery">
                         </a>
                     </li>

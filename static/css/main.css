@@ -10,3 +10,18 @@
     margin-right: -6px;
     opacity: .5;
 }
+
+/** layout **/
+
+.fixed-bar {
+    width: 220px;
+    float: left;
+}
+.main {
+    margin-left: 240px;
+}
+
+
+ul.thumbnails > li {
+    width: 270px !important;
+}
