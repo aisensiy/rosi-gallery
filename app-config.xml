@@ -1,0 +1,9 @@
+<uwsgi>
+     <pythonpath>/root/rosi-gallery</pythonpath>
+     <module>rosi-gallery</module>
+     <callable>main.py</callable>
+     <socket>/tmp/uwsgi.sock</socket>
+     <master/>
+     <processes>4</processes>
+     <memory-report/>
+</uwsgi>

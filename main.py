@@ -1,3 +1,4 @@
+#!python
 # -*- coding: utf8 -*-
 from flask import Flask, send_file, Response
 import random
