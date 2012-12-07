@@ -1,4 +1,6 @@
 config.json
+nohup.out
 *.pyc
 *.log
 *.txt
+rosi_view.egg-info
