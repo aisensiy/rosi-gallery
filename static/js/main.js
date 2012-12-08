@@ -70,6 +70,7 @@
         },
 
         show_images: function(dir) {
+            window.scrollTo(0);
             console.log('/list/' + dir);
             $.getJSON('/list/' + dir, function(json) {
                 window.image_list.render(json);
