@@ -3,7 +3,8 @@ from setuptools import setup
 requires = [
     'flask',
     'PIL',
-    'BeautifulSoup'
+    'BeautifulSoup',
+    'requests'
 ]
 
 setup(name='rosi-view',
